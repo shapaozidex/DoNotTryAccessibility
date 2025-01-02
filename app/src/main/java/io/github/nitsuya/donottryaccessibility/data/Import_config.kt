@@ -37,6 +37,12 @@ object ImportConfig {
             // 确保ConfigData已经初始化
             ConfigData.init(activity)
             
+            // 先清空现有数据
+            val currentApps = ConfigData.blockApps.data.toHashSet()
+            currentApps.forEach { app ->
+                ConfigData.blockApps.remove(app)
+            }
+            
             // 创建XML解析器
             val factory = XmlPullParserFactory.newInstance()
             val parser = factory.newPullParser()
@@ -44,7 +50,6 @@ object ImportConfig {
             // 读取XML文件
             activity.contentResolver.openInputStream(uri)?.use { input ->
                 parser.setInput(input, "UTF-8")
-
                 var eventType = parser.eventType
                 
                 // 解析XML文件
